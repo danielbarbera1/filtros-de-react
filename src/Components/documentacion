@@ -1,0 +1,111 @@
+
+consumo de api y map con useEffect react
+
+
+Aquí tienes un ejemplo completo, funcional y validado de cómo consumir una API en React usando useEffect y map para renderizar datos.
+Este ejemplo usa la API pública de JSONPlaceholder para obtener una lista de usuarios.
+
+Código en React (JavaScript)
+Jsximport React, { useState, useEffect } from "react";
+
+function App() {
+  // Estado para almacenar los datos y manejar errores/carga
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // useEffect para consumir la API al montar el componente
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+
+        // Validar respuesta HTTP
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUsers(data); // Guardar datos en el estado
+      } catch (err) {
+        setError(err.message); // Guardar mensaje de error
+      } finally {
+        setLoading(false); // Finalizar estado de carga
+      }
+    };
+
+    fetchUsers();
+  }, []); // [] asegura que se ejecute solo una vez al montar
+
+  // Renderizado condicional
+  if (loading) return <p>Cargando datos...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
+
+  return (
+    <div>
+      <h1>Lista de Usuarios</h1>
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>
+            <strong>{user.name}</strong> — {user.email}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+
+
+Explicación breve:
+
+
+useState
+
+users: almacena los datos de la API.
+loading: indica si la carga está en proceso.
+error: guarda mensajes de error si algo falla.
+
+
+
+useEffect
+
+Se ejecuta una sola vez al montar el componente ([] como dependencia).
+Llama a fetch para obtener datos de la API.
+Maneja errores y estados de carga.
+
+
+
+map
+
+Recorre el arreglo users y genera un <li> por cada usuario.
+Se usa key={user.id} para que React identifique cada elemento.
+
+
+
+Validación y manejo de errores
+
+Se verifica response.ok antes de procesar el JSON.
+Se captura cualquier error con try...catch.
+
+
+
+
+consumo de api  de categorias https://dummyjson.com/products/categories (listo)
+consumo de api  de productos  https://dummyjson.com/products (listo)
+consumo de api  de resolucion https://dummyjson.com/image/150
+
+TAREA: PONER BONITO LA PAGINA
+TAREA HACER LO MISMO QUE SE HIZO EN CATEGORIAS DE PRODUCTOS , AHORA VAMOS A HACER LA MUESTRA DE LOS PRODUCTOS (listo)
+
+
+falta
+
+agregarles las imagenes 
+
+
+tarea 
+
+filtrado de click y tambien el poner una pagina completa de una tienda 
+
