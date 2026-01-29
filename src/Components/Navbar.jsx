@@ -28,7 +28,7 @@ const Navbar = ({ }) => {
                         </button>
 
                         <button className="relative flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 group">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-teal-400">
+                            <div className="w-8 h-8 rounded-full bg-gradient-r from-blue-500 to-teal-400">
                                 <span className="text-white font-medium text-sm">JD</span>
                             </div>
                             <span className="hidden md:inline text-gray-700 font-medium">John Doe</span>
