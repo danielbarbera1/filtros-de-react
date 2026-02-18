@@ -1,80 +1,72 @@
-import { useEffect, useState } from 'react'
-import Pastillero from './Components/Pastillero'
-import Card from './Components/Card';
-import Navbar from './Components/Navbar';
+import { useState, useEffect } from "react";
+import Pastillero from "./Components/Pastillero";
+import Navbar from "./Components/Navbar";
+import Card from "./Components/Card";
 
+function app() {
 
-function App() {
-  const [categorias, setCategorias] = useState([]);/*estado de categorias */
-  const [productos, setProductos] = useState([]); /*estado de productos */
-  const [categoriaSeleccionada, setCategoriaseleccionada] = useState(null) /*estado de la seleccion de categorias  */
-  const [productosFiltrados, setProductosfiltrados] = useState([])/*estado de los filtros de productos  */
-
-  
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
 
   useEffect(() => {
     const fetchPro = async () => {
       try {
-        const resProductos = await fetch("https://dummyjson.com/products")// API de todos los productos
-        // Validar respuesta HTTP
+        const resProductos = await fetch("https://dummyjson.com/products")
+        //valida respuesta http
         if (!resProductos.ok) {
-          throw new Error(`Error HTTP: ${resProductos.status}`);
+          throw new Error(`Error HTTP:${resProductos.status}`);
         }
         const dataProductos = await resProductos.json();
-        setProductos(dataProductos.products);  // Guardar datos en el estado de productos
-      } catch (err) {
-        console.log(err) // Guardar mensaje de error
+        setProductos(dataProductos.productos);
+      } catch (error) {
+        console.error(error);
       }
-    };
+    }
     fetchPro()
   }, []);
 
   useEffect(() => {
     const fetchCat = async () => {
       try {
-        const resCategorias = await fetch("https://dummyjson.com/products/categories"); // API de todas las categorias 
-        // Validar respuesta HTTP
-        if (!resCategorias.ok) {
-          throw new Error(`Error HTTP: ${resCategorias.status}`);
+        const resCategoria = await fetch("https://dummyjson.com/products/categories");
+        //valida respuesta http
+        if (!resCategoria.ok) {
+          throw new Error(`Error HTTP:${resCategoria.status}`);
         }
-        const dataCategoria = await resCategorias.json();
-        setCategorias(dataCategoria); // Guardar datos en el estado de categorias 
-      } catch (err) {
-        console.log(err) // Guardar mensaje de error
+        const dataCategoria = await resCategoria.json();
+        setCategorias(dataCategoria);//guarda datos en el estado
+      } catch (error) {
+        console.log(err);//guarda mensaje de error
       }
     };
     fetchCat();
   }, []);
 
-  // Función que maneja el click en las categorías y filtra los productos
+  //funcion que maje ael clikc en las categorias y filtra los productos 
   const CategoriaClick = async (slugCategoria) => {
-    console.log('Slug de categoría clickeada:', slugCategoria);
-    
-    // Buscar el nombre de la categoría para mostrarlo
+    console.log(`Slug de categoria clickeada:`, slugCategoria);
+
     const categoriaEncontrada = categorias.find(cat => cat.slug === slugCategoria);
-    const nombreCategoria = categoriaEncontrada ? categoriaEncontrada.name : slugCategoria;
-    
-    setCategoriaseleccionada(nombreCategoria);
-    
+    const nombresCategoria = categoriaEncontrada ? categoriaEncontrada.name : slugCategoria;
+
+    setCategoriaSeleccionada(nombresCategoria);
+
     try {
-      // Hacer fetch directo a los productos de la categoría
       const response = await fetch(`https://dummyjson.com/products/category/${slugCategoria}`);
-      
       if (!response.ok) {
-        throw new Error(`Error HTTP: ${response.status}`);
+        throw new Error(`Error HTTP:${response.status}`);
       }
-      
       const data = await response.json();
-      console.log('Productos filtrados:', data.products);
-      setProductosfiltrados(data.products);
-    } catch (err) {
-      console.error('Error al obtener productos:', err);
-      setProductosfiltrados([]);
+      console.log(`Productos filtrados:`, data.products);
+      setProductosFiltrados(data.products);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
-
     <div>
       <Navbar />
 
@@ -88,34 +80,31 @@ function App() {
             onClickHandler={CategoriaClick}
           />
         ))}
-      </div>
 
-      {/* Mostrar categoría seleccionada */}
-      {categoriaSeleccionada && (
-        <div className='text-center my-4'>
-          <h2 className='text-2xl font-bold text-gray-800'>
-            Productos de: {categoriaSeleccionada}
-          </h2>
+
+        {/* Mostrar categoría seleccionada */}
+        {categoriaSeleccionada && (
+          <div className='text-center my-4'>
+            <h2 className='text-2xl font-bold text-gray-800'>
+              Productos de: {categoriaSeleccionada}
+            </h2>
+          </div>
+        )}
+
+        {/* Mostrar productos filtrados */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4'>{/*aqui el diseno de como van puesta los productos */}
+          {productosFiltrados.map((producto) => (
+            <Card
+              key={producto.id}
+              name={producto.title}
+              imageUrl={producto.thumbnail}
+              descripcion={producto.description}
+            />
+          ))}
         </div>
-      )}
-
-      {/* Mostrar productos filtrados */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4'>{/*aqui el diseno de como van puesta los productos */}
-        {productosFiltrados.map((producto) => (
-          <Card
-            key={producto.id}
-            name={producto.title}
-            imageUrl={producto.thumbnail}
-            descripcion={producto.description}
-          />
-        ))}
       </div>
-
-
     </div>
-
   )
 }
 
-export default App
-
+export default app;
